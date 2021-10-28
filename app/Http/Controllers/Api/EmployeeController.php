@@ -20,11 +20,11 @@ class EmployeeController extends Controller
         // return Employee::orderBy('id','dec')->pageinate(25); 
 
         //Read all Contact Employees
-        $Employees = Employee::all();               
-        return response()->json([
-                'message' => $Employees               
-                
-            ] ,200 );             
+        // $Employees = Employee::orderBy('id','desc')->paginate(4);
+        $Employees = Employee::orderBy('updated_at','desc')->paginate(12);
+        
+        // $Employees = Employee::orderBy('id','dec')->pageinate(2);
+        return response()->json($Employees ,200);
     }
 
     /**
@@ -116,12 +116,55 @@ class EmployeeController extends Controller
      * @param  string  $team
      * @return \Illuminate\Http\Response
      */
-    public function search($team)
+    public function search($keyword)
     {
-        $team = Employee::where('team' , 'like' , '%'.$team.'%')->get();
-        return response()->json([
-            'message' => 'Select Team Successfully!',
-            'Contact Team Employee' => $team
-        ], 200);       
+        $keyword = Employee::where('name_th' , 'like' , '%'.$keyword.'%')
+                             ->orWhere('name_en' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('nickname' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('ipphone' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('mobile' , 'like' , '%'.$keyword.'%' )
+                            //  ->orWhere('email ' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('position' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('team' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('department' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('group' , 'like' , '%'.$keyword.'%' )
+                             ->orWhere('location' , 'like' , '%'.$keyword.'%' )
+                             ->orderBy('updated_at','desc')
+                             ->paginate(12);
+        return response()->json($keyword,200);   
+            
     }
+
+    // ------------------------------------------------------------------------------
+    // ----------------------- API ข้อมูลพนักงาน NMC ----------------------------------               
+    // ------------------------------------------------------------------------------
+
+    public function getnmc()
+    {
+        
+            $nmcs = Employee::where('team' , '=' , 'Network Management Center')
+                              ->orderBy('id','desc')->paginate(8);
+            return response()->json($nmcs,200); 
+    }
+
+    public function getTeanNmc($shift)
+    {        
+            $nmc_team = Employee::where('group' , 'like' , $shift)
+                              ->orderBy('id','desc')->paginate(8);
+            return response()->json($nmc_team,200); 
+    }
+
+
+    // ------------------------------------------------------------------------------
+    // ----------------------- API ข้อมูลพนักงาน O&M ----------------------------------               
+    // ------------------------------------------------------------------------------
+
+    public function getOM()
+    {
+        
+            $nmcs = Employee::where('team' , '=' , 'Operation&Maintenance Center')
+                              ->orderBy('id','desc')->paginate(8);
+            return response()->json($nmcs,200); 
+    }
+
 }
