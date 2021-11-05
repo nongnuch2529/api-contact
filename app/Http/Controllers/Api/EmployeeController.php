@@ -143,14 +143,14 @@ class EmployeeController extends Controller
     {
         
             $nmcs = Employee::where('team' , '=' , 'Network Management Center')
-                              ->orderBy('id','desc')->paginate(8);
+                              ->orderBy('updated_at','desc')->paginate(12);
             return response()->json($nmcs,200); 
     }
 
     public function getTeanNmc($shift)
     {        
-            $nmc_team = Employee::where('group' , 'like' , $shift)
-                              ->orderBy('id','desc')->paginate(8);
+            $nmc_team = Employee::where('group' , 'like' , $shift)                              
+                             ->orderBy('updated_at','desc')->paginate(12);
             return response()->json($nmc_team,200); 
     }
 
@@ -162,9 +162,53 @@ class EmployeeController extends Controller
     public function getOM()
     {
         
-            $nmcs = Employee::where('team' , '=' , 'Operation&Maintenance Center')
-                              ->orderBy('id','desc')->paginate(8);
-            return response()->json($nmcs,200); 
+            $oms = Employee::where('team' , '=' , 'Operation&Maintenance Center')
+                              ->orderBy('updated_at','desc')->paginate(12);
+            return response()->json($oms,200); 
+    }
+
+    public function getTeanOM($area)    
+    {        
+            $om_team = Employee::where('group' , 'like' , $area)                              
+                             ->orderBy('updated_at','desc')->paginate(12);
+            return response()->json($om_team,200); 
+    }
+
+    public function searchTeamOM($team , $keyword)    
+    {        
+            $keyword_om = Employee::where('group' , 'like' , $team)  
+                                 ->where(function ($query) use ($keyword) {
+                                        $query->where('name_th', "like", "%" . $keyword . "%");
+                                        $query->orWhere('name_en', "like", "%" . $keyword . "%");
+                                        $query->orWhere('mobile', "like", "%" .$keyword . "%");
+                                        $query->orWhere('location', "like", "%" .$keyword . "%");
+                                 })->orderBy('updated_at','desc')->paginate(12); 
+                                    
+                                                   
+                                // ->orderBy('updated_at','desc')->paginate(12);
+            return response()->json($keyword_om,200); 
+    }
+
+    // ------------------------------------------------------------------------------
+    // ----------------------- API ข้อมูล Cantact ผู้บริหาร ------------------------------              
+    // ------------------------------------------------------------------------------
+
+    public function getExecutive()    
+    {        
+            $om_team = Employee::where('group' , 'like' , 'Executive')
+                                 ->orderBy('ipphone' , 'asc')->get();                             
+            return response()->json($om_team,200); 
+    }
+
+    // ------------------------------------------------------------------------------
+    // ----------------------- API ค้นหาข้อมูล Contact By แผนก ------------------------              
+    // ------------------------------------------------------------------------------
+
+    public function getDepartment($department)    
+    {        
+            $emp_department = Employee::where('team' , 'like' , "%" .$department . "%")
+                                 ->orderBy('updated_at','desc')->paginate(12);                              
+            return response()->json($emp_department,200); 
     }
 
 }

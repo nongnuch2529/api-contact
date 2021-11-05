@@ -24,11 +24,16 @@ Route::get('employee',  [EmployeeController::class , 'index']);
 Route::get('nmc',  [EmployeeController::class , 'getnmc']);
 Route::get('nmc/team/{shift}',  [EmployeeController::class , 'getTeanNmc']);
 
+
 Route::get('om',  [EmployeeController::class , 'getOM']);
+Route::get('om/area/{area}',  [EmployeeController::class , 'getTeanOM']);
+Route::get('om/area/{area}/search/{keyword}',  [EmployeeController::class , 'searchTeamOM']);
 // Route::get('employee/{id}', [EmployeeController::class , 'show']);
 Route::get('employee/search/{keyword}', [EmployeeController::class , 'search']);  
 
+Route::get('employee/executive', [EmployeeController::class , 'getExecutive']); 
 
+Route::get('department/{team}', [EmployeeController::class , 'getDepartment']); 
 // Protected route
 Route::group(['middleware' => 'auth:sanctum'], function(){
 
