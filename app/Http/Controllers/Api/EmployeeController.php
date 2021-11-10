@@ -162,7 +162,7 @@ class EmployeeController extends Controller
     public function getOM()
     {
         
-            $oms = Employee::where('team' , '=' , 'Operation&Maintenance Center')
+            $oms = Employee::where('team' , '=' , 'Operation & Maintenance Center')
                               ->orderBy('updated_at','desc')->paginate(12);
             return response()->json($oms,200); 
     }
